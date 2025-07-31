@@ -1,0 +1,32 @@
+{
+  "name": "mapbox-export-tool",
+  "version": "1.0.0",
+  "description": "Mapbox地图导出工具 - 使用Node.js和Puppeteer实现高质量地图图片导出",
+  "main": "src/mapbox-exporter.js",
+  "scripts": {
+    "start": "node src/mapbox-exporter.js",
+    "example": "node examples/basic-usage.js",
+    "test": "node examples/test-export.js"
+  },
+  "keywords": [
+    "mapbox",
+    "export",
+    "puppeteer",
+    "map",
+    "screenshot",
+    "nodejs"
+  ],
+  "author": "weix",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^21.6.1",
+    "fs-extra": "^11.2.0",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
