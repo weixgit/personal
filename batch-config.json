@@ -1,0 +1,126 @@
+[
+  {
+    "name": "北京街道地图",
+    "style": "mapbox://styles/mapbox/streets-v12",
+    "center": [116.4074, 39.9042],
+    "zoom": 11,
+    "width": 1200,
+    "height": 800,
+    "format": "png",
+    "output": "outputs/batch/beijing-streets.png",
+    "showWatermark": true,
+    "markers": [
+      {
+        "coordinates": [116.3974, 39.9093],
+        "color": "#FF0000",
+        "size": "25px",
+        "popup": "<h3>天安门广场</h3><p>中华人民共和国的象征</p>"
+      },
+      {
+        "coordinates": [116.4074, 39.9042],
+        "color": "#00FF00",
+        "size": "20px",
+        "popup": "<h3>王府井</h3><p>著名商业街</p>"
+      }
+    ]
+  },
+  {
+    "name": "上海卫星地图",
+    "style": "mapbox://styles/mapbox/satellite-streets-v12",
+    "center": [121.4737, 31.2304],
+    "zoom": 12,
+    "width": 1400,
+    "height": 900,
+    "format": "jpeg",
+    "output": "outputs/batch/shanghai-satellite.jpg",
+    "bearing": 0,
+    "pitch": 0,
+    "showWatermark": true,
+    "markers": [
+      {
+        "coordinates": [121.4944, 31.2397],
+        "color": "#FFD700",
+        "size": "30px",
+        "popup": "<h3>东方明珠塔</h3><p>上海地标建筑</p>"
+      }
+    ]
+  },
+  {
+    "name": "广州深色主题",
+    "style": "mapbox://styles/mapbox/dark-v11",
+    "center": [113.2644, 23.1291],
+    "zoom": 10,
+    "width": 1000,
+    "height": 750,
+    "format": "png",
+    "output": "outputs/batch/guangzhou-dark.png",
+    "showWatermark": false,
+    "markers": [
+      {
+        "coordinates": [113.2644, 23.1291],
+        "color": "#00BFFF",
+        "size": "25px",
+        "popup": "<h3>广州塔</h3><p>小蛮腰</p>"
+      }
+    ]
+  },
+  {
+    "name": "深圳户外地图",
+    "style": "mapbox://styles/mapbox/outdoors-v12",
+    "center": [114.0579, 22.5431],
+    "zoom": 11,
+    "width": 1200,
+    "height": 800,
+    "format": "png",
+    "output": "outputs/batch/shenzhen-outdoors.png",
+    "bearing": 15,
+    "pitch": 20,
+    "showWatermark": true,
+    "markers": [
+      {
+        "coordinates": [114.0579, 22.5431],
+        "color": "#FF6347",
+        "size": "25px",
+        "popup": "<h3>深圳市中心</h3><p>改革开放的窗口</p>"
+      }
+    ]
+  },
+  {
+    "name": "杭州轻色主题",
+    "style": "mapbox://styles/mapbox/light-v11",
+    "center": [120.1551, 30.2741],
+    "zoom": 12,
+    "width": 1100,
+    "height": 850,
+    "format": "png",
+    "output": "outputs/batch/hangzhou-light.png",
+    "showWatermark": true,
+    "markers": [
+      {
+        "coordinates": [120.1551, 30.2741],
+        "color": "#32CD32",
+        "size": "25px",
+        "popup": "<h3>西湖</h3><p>人间天堂</p>"
+      }
+    ]
+  },
+  {
+    "name": "成都导航主题",
+    "style": "mapbox://styles/mapbox/navigation-day-v1",
+    "center": [104.0665, 30.5728],
+    "zoom": 11,
+    "width": 1200,
+    "height": 800,
+    "format": "png",
+    "output": "outputs/batch/chengdu-navigation.png",
+    "showWatermark": true,
+    "markers": [
+      {
+        "coordinates": [104.0665, 30.5728],
+        "color": "#FF1493",
+        "size": "25px",
+        "popup": "<h3>天府广场</h3><p>成都市中心</p>"
+      }
+    ]
+  }
+]
