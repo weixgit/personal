@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapbox Export Tool</title>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .watermark {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #666;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading" class="loading">
+        <div>正在加载地图...</div>
+    </div>
+    
+    <div id="map"></div>
+    
+    <div class="watermark" id="watermark" style="display: none;">
+        Exported with Mapbox Export Tool
+    </div>
+
+    <script>
+        // 全局配置对象，将由 Puppeteer 注入
+        window.mapConfig = window.mapConfig || {
+            accessToken: '',
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center: [116.4074, 39.9042], // 北京
+            zoom: 10,
+            bearing: 0,
+            pitch: 0,
+            width: 1200,
+            height: 800,
+            showWatermark: true,
+            markers: [],
+            layers: []
+        };
+
+        // 初始化地图
+        function initMap() {
+            const config = window.mapConfig;
+            
+            // 设置 Mapbox 访问令牌
+            mapboxgl.accessToken = config.accessToken;
+            
+            // 创建地图实例
+            const map = new mapboxgl.Map({
+                container: 'map',
+                style: config.style,
+                center: config.center,
+                zoom: config.zoom,
+                bearing: config.bearing,
+                pitch: config.pitch,
+                preserveDrawingBuffer: true, // 重要：允许截图
+                antialias: true,
+                attributionControl: false // 移除默认的版权信息
+            });
+
+            // 地图加载完成后的处理
+            map.on('load', function() {
+                console.log('Map loaded successfully');
+                
+                // 添加标记点
+                if (config.markers && config.markers.length > 0) {
+                    config.markers.forEach(marker => {
+                        const el = document.createElement('div');
+                        el.className = 'marker';
+                        el.style.backgroundColor = marker.color || '#FF0000';
+                        el.style.width = marker.size || '20px';
+                        el.style.height = marker.size || '20px';
+                        el.style.borderRadius = '50%';
+                        el.style.border = '2px solid white';
+                        el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+                        
+                        new mapboxgl.Marker(el)
+                            .setLngLat(marker.coordinates)
+                            .setPopup(marker.popup ? new mapboxgl.Popup().setHTML(marker.popup) : null)
+                            .addTo(map);
+                    });
+                }
+                
+                // 添加自定义图层
+                if (config.layers && config.layers.length > 0) {
+                    config.layers.forEach(layer => {
+                        map.addLayer(layer);
+                    });
+                }
+                
+                // 显示水印
+                if (config.showWatermark) {
+                    document.getElementById('watermark').style.display = 'block';
+                }
+                
+                // 隐藏加载提示
+                document.getElementById('loading').style.display = 'none';
+                
+                // 通知 Puppeteer 地图已准备就绪
+                window.mapReady = true;
+                
+                // 触发自定义事件
+                window.dispatchEvent(new CustomEvent('mapReady', { detail: { map } }));
+            });
+
+            // 错误处理
+            map.on('error', function(e) {
+                console.error('Map error:', e);
+                document.getElementById('loading').innerHTML = '<div style="color: red;">地图加载失败: ' + e.error.message + '</div>';
+            });
+
+            // 样式加载错误处理
+            map.on('styleimagemissing', function(e) {
+                console.warn('Missing image:', e.id);
+            });
+
+            return map;
+        }
+
+        // 等待 DOM 加载完成后初始化地图
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initMap);
+        } else {
+            initMap();
+        }
+
+        // 辅助函数：等待地图完全加载
+        function waitForMapReady() {
+            return new Promise((resolve) => {
+                if (window.mapReady) {
+                    resolve();
+                } else {
+                    window.addEventListener('mapReady', resolve, { once: true });
+                }
+            });
+        }
+
+        // 辅助函数：获取地图截图
+        function getMapImage() {
+            const canvas = document.querySelector('.mapboxgl-canvas');
+            return canvas ? canvas.toDataURL('image/png') : null;
+        }
+    </script>
+</body>
+</html>
