@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>刺绣文字效果 - 动态变化</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="embroidery-text" id="embroideryText">C</div>
+        <div class="controls">
+            <input type="text" id="textInput" placeholder="输入要显示的文字" maxlength="10">
+            <button onclick="changeText()">更换文字</button>
+            <button onclick="startAutoChange()">自动变化</button>
+            <button onclick="stopAutoChange()">停止变化</button>
+        </div>
+        <div class="preset-texts">
+            <button onclick="setText('C')">C</button>
+            <button onclick="setText('HELLO')">HELLO</button>
+            <button onclick="setText('刺绣')">刺绣</button>
+            <button onclick="setText('LOVE')">LOVE</button>
+            <button onclick="setText('2024')">2024</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
