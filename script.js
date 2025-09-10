@@ -4,6 +4,8 @@ class EmbroideryTextEffect {
         this.textInput = document.getElementById('textInput');
         this.autoChangeInterval = null;
         this.isAutoChanging = false;
+        this.currentFont = null;
+        this.fontName = 'Default';
         
         // 预设文字数组
         this.presetTexts = ['C', 'HELLO', '刺绣', 'LOVE', '2024', 'JS', 'CSS', 'HTML', '美丽', 'ART'];
@@ -23,6 +25,12 @@ class EmbroideryTextEffect {
                 this.changeText();
             }
         });
+        
+        // 绑定字体文件上传事件
+        const fontFile = document.getElementById('fontFile');
+        if (fontFile) {
+            fontFile.addEventListener('change', this.handleFontFile.bind(this));
+        }
         
         // 添加鼠标悬停效果
         this.textElement.addEventListener('mouseenter', () => {
@@ -249,4 +257,226 @@ if ('ontouchstart' in window) {
             embroideryEffect.addSparkleEffect();
         }
     });
+}
+
+// SVG导出相关方法
+EmbroideryTextEffect.prototype.handleFontFile = async function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    try {
+        const arrayBuffer = await file.arrayBuffer();
+        const base64 = this.arrayBufferToBase64(arrayBuffer);
+        const fileType = file.type || 'font/ttf';
+        const fontUrl = `data:${fileType};base64,${base64}`;
+        
+        this.fontName = this.generateFontName(file.name);
+        await this.loadFont(this.fontName, fontUrl);
+        
+        // 更新字体信息显示
+        const fontInfo = document.getElementById('fontInfo');
+        const fontName = document.getElementById('fontName');
+        if (fontInfo && fontName) {
+            fontName.textContent = `字体: ${this.fontName}`;
+            fontInfo.style.display = 'block';
+        }
+        
+        // 应用字体到当前文本
+        this.textElement.style.fontFamily = this.fontName;
+        
+        console.log(`字体 ${this.fontName} 加载成功`);
+    } catch (error) {
+        console.error('字体加载失败:', error);
+        alert('字体加载失败: ' + error.message);
+    }
+};
+
+EmbroideryTextEffect.prototype.arrayBufferToBase64 = function(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+};
+
+EmbroideryTextEffect.prototype.generateFontName = function(fileName) {
+    const name = fileName.split('.')[0];
+    return name.replace(/[^a-zA-Z0-9]/g, '') + '_' + Date.now();
+};
+
+EmbroideryTextEffect.prototype.loadFont = function(fontName, fontUrl) {
+    return new Promise((resolve, reject) => {
+        const fontFace = new FontFace(fontName, `url(${fontUrl})`);
+        
+        fontFace.load().then((loadedFont) => {
+            document.fonts.add(loadedFont);
+            this.currentFont = fontName;
+            resolve();
+        }).catch((error) => {
+            reject(new Error(`字体加载失败: ${error.message}`));
+        });
+    });
+};
+
+EmbroideryTextEffect.prototype.createSVG = function() {
+    const text = this.textElement.textContent;
+    const fontSize = parseInt(window.getComputedStyle(this.textElement).fontSize);
+    const fontColor = window.getComputedStyle(this.textElement).color;
+    const fontFamily = this.currentFont || 'Georgia, serif';
+    
+    // 获取文本的边界框
+    const bbox = this.textElement.getBBox ? this.textElement.getBBox() : { width: text.length * fontSize * 0.6, height: fontSize };
+    
+    // 创建SVG
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', bbox.width + 100);
+    svg.setAttribute('height', bbox.height + 100);
+    svg.setAttribute('viewBox', `0 0 ${bbox.width + 100} ${bbox.height + 100}`);
+    
+    // 添加背景
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('width', '100%');
+    rect.setAttribute('height', '100%');
+    rect.setAttribute('fill', '#ffffff');
+    svg.appendChild(rect);
+    
+    // 添加文本
+    const textElement = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    textElement.textContent = text;
+    textElement.setAttribute('x', (bbox.width + 100) / 2);
+    textElement.setAttribute('y', (bbox.height + 100) / 2 + fontSize / 3);
+    textElement.setAttribute('font-size', fontSize);
+    textElement.setAttribute('font-family', fontFamily);
+    textElement.setAttribute('fill', fontColor);
+    textElement.setAttribute('text-anchor', 'middle');
+    textElement.setAttribute('dominant-baseline', 'middle');
+    
+    // 添加刺绣效果（简化版）
+    const shadowText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    shadowText.textContent = text;
+    shadowText.setAttribute('x', (bbox.width + 100) / 2 + 2);
+    shadowText.setAttribute('y', (bbox.height + 100) / 2 + fontSize / 3 + 2);
+    shadowText.setAttribute('font-size', fontSize);
+    shadowText.setAttribute('font-family', fontFamily);
+    shadowText.setAttribute('fill', '#888888');
+    shadowText.setAttribute('text-anchor', 'middle');
+    shadowText.setAttribute('dominant-baseline', 'middle');
+    
+    svg.insertBefore(shadowText, textElement);
+    svg.appendChild(textElement);
+    
+    return svg;
+};
+
+// 全局导出函数
+function exportToSVG() {
+    if (!embroideryEffect) return;
+    
+    try {
+        const svg = embroideryEffect.createSVG();
+        const svgData = new XMLSerializer().serializeToString(svg);
+        const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'embroidery-text.svg';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        alert('SVG文件下载成功！');
+    } catch (error) {
+        console.error('SVG导出失败:', error);
+        alert('SVG导出失败: ' + error.message);
+    }
+}
+
+function exportToPNG() {
+    if (!embroideryEffect) return;
+    
+    try {
+        const svg = embroideryEffect.createSVG();
+        const svgData = new XMLSerializer().serializeToString(svg);
+        
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
+        
+        img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            
+            canvas.toBlob((blob) => {
+                const downloadUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = 'embroidery-text.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(downloadUrl);
+                URL.revokeObjectURL(url);
+                
+                alert('PNG文件下载成功！');
+            }, 'image/png');
+        };
+        
+        img.src = url;
+    } catch (error) {
+        console.error('PNG导出失败:', error);
+        alert('PNG导出失败: ' + error.message);
+    }
+}
+
+function exportToJPG() {
+    if (!embroideryEffect) return;
+    
+    try {
+        const svg = embroideryEffect.createSVG();
+        const svgData = new XMLSerializer().serializeToString(svg);
+        
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
+        
+        img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            
+            // 设置白色背景
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.drawImage(img, 0, 0);
+            
+            canvas.toBlob((blob) => {
+                const downloadUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = 'embroidery-text.jpg';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(downloadUrl);
+                URL.revokeObjectURL(url);
+                
+                alert('JPG文件下载成功！');
+            }, 'image/jpeg', 0.9);
+        };
+        
+        img.src = url;
+    } catch (error) {
+        console.error('JPG导出失败:', error);
+        alert('JPG导出失败: ' + error.message);
+    }
 }

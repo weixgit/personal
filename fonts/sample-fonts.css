@@ -1,0 +1,15 @@
+
+/* 示例字体样式 */
+@font-face {
+    font-family: 'SampleFont';
+    src: url('data:font/woff2;base64,') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'SampleFontBold';
+    src: url('data:font/woff2;base64,') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+}

@@ -1,0 +1,41 @@
+{
+  "fonts": [
+    {
+      "name": "Roboto",
+      "description": "Google Material Design字体",
+      "url": "https://fonts.google.com/specimen/Roboto",
+      "files": [
+        "Roboto-Regular.ttf",
+        "Roboto-Bold.ttf"
+      ]
+    },
+    {
+      "name": "Open Sans",
+      "description": "Google开源字体",
+      "url": "https://fonts.google.com/specimen/Open+Sans",
+      "files": [
+        "OpenSans-Regular.ttf",
+        "OpenSans-Bold.ttf"
+      ]
+    },
+    {
+      "name": "Lato",
+      "description": "现代无衬线字体",
+      "url": "https://fonts.google.com/specimen/Lato",
+      "files": [
+        "Lato-Regular.ttf",
+        "Lato-Bold.ttf"
+      ]
+    }
+  ],
+  "instructions": {
+    "download": "从Google Fonts下载字体文件",
+    "usage": "在SVG文本导出器中上传字体文件",
+    "formats": [
+      "TTF",
+      "OTF",
+      "WOFF",
+      "WOFF2"
+    ]
+  }
+}

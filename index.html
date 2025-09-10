@@ -22,6 +22,21 @@
             <button onclick="setText('LOVE')">LOVE</button>
             <button onclick="setText('2024')">2024</button>
         </div>
+        
+        <!-- SVG导出功能 -->
+        <div class="svg-export-section">
+            <h3>SVG文本导出</h3>
+            <div class="svg-controls">
+                <input type="file" id="fontFile" accept=".ttf,.otf,.woff,.woff2" style="display: none;">
+                <button onclick="document.getElementById('fontFile').click()">上传字体</button>
+                <button onclick="exportToSVG()">导出SVG</button>
+                <button onclick="exportToPNG()">导出PNG</button>
+                <button onclick="exportToJPG()">导出JPG</button>
+            </div>
+            <div class="font-info" id="fontInfo" style="display: none;">
+                <span id="fontName">字体: 未加载</span>
+            </div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
