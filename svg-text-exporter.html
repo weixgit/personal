@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG文本字体加载与图片导出</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .controls-panel {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .control-group input,
+        .control-group select,
+        .control-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .control-group input:focus,
+        .control-group select:focus,
+        .control-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .font-upload {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: border-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .font-upload:hover {
+            border-color: #667eea;
+        }
+
+        .font-upload.dragover {
+            border-color: #667eea;
+            background-color: rgba(102, 126, 234, 0.05);
+        }
+
+        .preview-panel {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            text-align: center;
+        }
+
+        .svg-container {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(86, 171, 47, 0.3);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #3498db 0%, #85c1e9 100%);
+            color: white;
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .font-info {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .font-info h4 {
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+
+        .font-info p {
+            margin: 5px 0;
+            color: #424242;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #ffebee;
+            border: 1px solid #ffcdd2;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .success {
+            background: #e8f5e8;
+            border: 1px solid #c8e6c9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .export-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SVG文本字体加载与图片导出</h1>
+            <p>上传字体文件，创建SVG文本，并导出为高质量图片</p>
+        </div>
+
+        <div class="main-content">
+            <div class="controls-panel">
+                <div class="control-group">
+                    <label for="fontFile">上传字体文件 (.ttf, .otf, .woff, .woff2)</label>
+                    <div class="font-upload" id="fontUpload">
+                        <p>点击选择文件或拖拽字体文件到此处</p>
+                        <input type="file" id="fontFile" accept=".ttf,.otf,.woff,.woff2" style="display: none;">
+                    </div>
+                    <div class="font-info" id="fontInfo" style="display: none;">
+                        <h4>字体信息</h4>
+                        <p id="fontName">字体名称: -</p>
+                        <p id="fontFormat">格式: -</p>
+                        <p id="fontSize">文件大小: -</p>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="textInput">输入文本</label>
+                    <textarea id="textInput" rows="3" placeholder="输入要显示的文本...">Hello SVG!</textarea>
+                </div>
+
+                <div class="control-group">
+                    <label for="fontSize">字体大小</label>
+                    <input type="range" id="fontSize" min="12" max="200" value="48">
+                    <span id="fontSizeValue">48px</span>
+                </div>
+
+                <div class="control-group">
+                    <label for="fontColor">字体颜色</label>
+                    <input type="color" id="fontColor" value="#333333">
+                </div>
+
+                <div class="control-group">
+                    <label for="backgroundColor">背景颜色</label>
+                    <input type="color" id="backgroundColor" value="#ffffff">
+                </div>
+
+                <div class="control-group">
+                    <label for="textAlign">文本对齐</label>
+                    <select id="textAlign">
+                        <option value="left">左对齐</option>
+                        <option value="center" selected>居中</option>
+                        <option value="right">右对齐</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="svgWidth">SVG宽度</label>
+                    <input type="number" id="svgWidth" value="800" min="100" max="2000">
+                </div>
+
+                <div class="control-group">
+                    <label for="svgHeight">SVG高度</label>
+                    <input type="number" id="svgHeight" value="400" min="100" max="2000">
+                </div>
+            </div>
+
+            <div class="preview-panel">
+                <h3>SVG预览</h3>
+                <div class="svg-container" id="svgContainer">
+                    <svg id="textSvg" width="800" height="400" viewBox="0 0 800 400">
+                        <text x="400" y="200" text-anchor="middle" font-size="48" fill="#333333">Hello SVG!</text>
+                    </svg>
+                </div>
+
+                <div class="export-buttons">
+                    <button class="btn btn-primary" onclick="exportAsPNG()">导出为PNG</button>
+                    <button class="btn btn-success" onclick="exportAsJPG()">导出为JPG</button>
+                    <button class="btn btn-info" onclick="downloadSVG()">下载SVG</button>
+                </div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>正在处理...</p>
+                </div>
+
+                <div class="error" id="error"></div>
+                <div class="success" id="success"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="svg-text-exporter.js"></script>
+</body>
+</html>

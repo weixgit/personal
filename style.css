@@ -245,3 +245,73 @@ body {
     background-size: 4px 4px, 4px 4px;
     background-blend-mode: overlay;
 }
+
+/* SVG导出功能样式 */
+.svg-export-section {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    border: 2px solid #dee2e6;
+    text-align: center;
+}
+
+.svg-export-section h3 {
+    color: #495057;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.svg-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.svg-controls button {
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
+}
+
+.svg-controls button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+    background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+}
+
+.font-info {
+    background: #d1ecf1;
+    border: 1px solid #bee5eb;
+    border-radius: 8px;
+    padding: 10px 15px;
+    color: #0c5460;
+    font-size: 0.9rem;
+    display: inline-block;
+}
+
+/* 响应式设计更新 */
+@media (max-width: 768px) {
+    .svg-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .svg-controls button {
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .svg-export-section {
+        margin-top: 2rem;
+        padding: 1.5rem;
+    }
+}

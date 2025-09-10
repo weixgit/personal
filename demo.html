@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG文本字体加载与图片导出 - 演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 40px;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .feature-card p {
+            color: #6c757d;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .feature-card .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .demo-section {
+            background: #f8f9fa;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .demo-section h2 {
+            color: #495057;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .demo-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .demo-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+        }
+
+        .demo-btn.secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        .demo-btn.secondary:hover {
+            box-shadow: 0 10px 25px rgba(108, 117, 125, 0.3);
+        }
+
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .footer p {
+            margin-bottom: 10px;
+        }
+
+        .footer a {
+            color: #20c997;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            
+            .demo-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .demo-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 SVG文本字体加载与图片导出</h1>
+            <p>强大的字体加载、SVG渲染和图片导出解决方案</p>
+            <p>支持多种字体格式，一键导出高质量图片</p>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🔤</div>
+                <h3>字体加载</h3>
+                <p>支持 TTF、OTF、WOFF、WOFF2 等多种字体格式，动态加载自定义字体文件，实时预览效果。</p>
+                <a href="svg-text-exporter.html" class="btn">体验字体加载</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>SVG渲染</h3>
+                <p>基于SVG的高质量文本渲染，支持自定义字体、颜色、大小等属性，完美保持矢量特性。</p>
+                <a href="svg-text-exporter.html" class="btn">查看SVG渲染</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📸</div>
+                <h3>图片导出</h3>
+                <p>一键导出为PNG、JPG、SVG格式，支持高分辨率输出，满足各种使用场景需求。</p>
+                <a href="svg-text-exporter.html" class="btn">开始导出</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">✨</div>
+                <h3>刺绣效果</h3>
+                <p>独特的刺绣文字效果，立体阴影、渐变色彩，为您的文字添加艺术感和视觉冲击力。</p>
+                <a href="index.html" class="btn">查看刺绣效果</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>实时预览</h3>
+                <p>所见即所得的实时预览功能，调整参数即时查看效果，让创作过程更加直观高效。</p>
+                <a href="svg-text-exporter.html" class="btn">实时预览</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>响应式设计</h3>
+                <p>完美适配各种设备屏幕，从桌面到移动端，确保在任何设备上都有出色的用户体验。</p>
+                <a href="index.html" class="btn">响应式体验</a>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🚀 快速开始</h2>
+            <p style="margin-bottom: 30px; color: #6c757d; font-size: 1.1rem;">
+                选择您想要体验的功能，开始创作您的艺术作品
+            </p>
+            <div class="demo-buttons">
+                <a href="svg-text-exporter.html" class="demo-btn">SVG文本导出器</a>
+                <a href="index.html" class="demo-btn secondary">刺绣文字效果</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>SVG文本字体加载与图片导出工具</strong></p>
+            <p>支持多种字体格式 • 高质量图片导出 • 响应式设计</p>
+            <p>使用现代Web技术构建，兼容主流浏览器</p>
+            <p>
+                <a href="fonts/USAGE.md">字体使用说明</a> • 
+                <a href="fonts/font-info.json">字体信息</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // 添加一些交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为卡片添加动画效果
+            const cards = document.querySelectorAll('.feature-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // 添加按钮点击效果
+            const buttons = document.querySelectorAll('.btn, .demo-btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // 创建波纹效果
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        background: rgba(255,255,255,0.3);
+                        border-radius: 50%;
+                        transform: scale(0);
+                        animation: ripple 0.6s ease-out;
+                        pointer-events: none;
+                    `;
+                    
+                    this.style.position = 'relative';
+                    this.style.overflow = 'hidden';
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+
+            // 添加CSS动画
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(2);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
